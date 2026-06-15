@@ -2,7 +2,9 @@ import { db, auth } from "./firebase.js";
 
 import {
   collection,
-  addDoc
+  addDoc,
+  setDoc,
+  doc
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 export async function saveEntryToFirestore(entry) {
@@ -13,7 +15,18 @@ export async function saveEntryToFirestore(entry) {
     throw new Error("User not logged in");
   }
 
-  await addDoc(
+  // Create user document first
+  await setDoc(
+    doc(db, "users", user.uid),
+    {
+      name: user.displayName,
+      email: user.email
+    },
+    { merge: true }
+  );
+
+  // Create diary entry
+  const docRef = await addDoc(
     collection(
       db,
       "users",
@@ -22,6 +35,8 @@ export async function saveEntryToFirestore(entry) {
     ),
     entry
   );
-  window.saveEntryToFirestore = saveEntryToFirestore;
 
+  console.log("Entry saved:", docRef.id);
 }
+
+window.saveEntryToFirestore = saveEntryToFirestore;

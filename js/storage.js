@@ -2,8 +2,14 @@
  * Storage Module
  * Handles all LocalStorage operations for the Diary App.
  */
+function getStorageKey() {
 
-const STORAGE_KEY = 'my_diary_entries';
+    if (window.getCurrentUserStorageKey) {
+        return window.getCurrentUserStorageKey();
+    }
+
+    return "guest_entries";
+}
 const THEME_KEY = 'my_diary_theme';
 
 class Storage {
@@ -12,7 +18,7 @@ class Storage {
      * @returns {Array} Array of entry objects
      */
     static getEntries() {
-        const data = localStorage.getItem(STORAGE_KEY);
+        const data = localStorage.getItem(getStorageKey());
         if (!data) return [];
         try {
             return JSON.parse(data);
@@ -27,7 +33,7 @@ class Storage {
      * @param {Array} entries 
      */
     static saveEntries(entries) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+        localStorage.setItem(getStorageKey(), JSON.stringify(entries));
     }
 
     /**
@@ -102,7 +108,8 @@ class Storage {
      * Clear all diary entries
      */
     static clearData() {
-        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(
+    getStorageKey());
     }
 
     /**
@@ -110,7 +117,7 @@ class Storage {
      * @returns {string} 'light' or 'dark'
      */
     static getTheme() {
-        return localStorage.getItem(THEME_KEY) || 'light';
+        return localStorage.getItem(getStorageKey()) || 'light';
     }
 
     /**
@@ -118,6 +125,8 @@ class Storage {
      * @param {string} theme 
      */
     static saveTheme(theme) {
-        localStorage.setItem(THEME_KEY, theme);
+        localStorage.setItem(
+    getStorageKey(),
+    JSON.stringify(entries));
     }
 }
