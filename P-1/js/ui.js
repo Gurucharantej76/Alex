@@ -301,10 +301,19 @@ class UI {
             content: document.getElementById('entry-content').value
         };
 
-        const entry = Diary.createEntry(data);
-        Storage.saveEntry(entry);
-        
-        this.entryModal.classList.remove('active');
+   const entry = Diary.createEntry(data);
+
+Storage.saveEntry(entry);
+
+if (window.saveEntryToFirestore) {
+
+    window.saveEntryToFirestore(entry)
+        .then(() => console.log("Saved to Firestore"))
+        .catch(err => console.error(err));
+
+}
+
+this.entryModal.classList.remove('active');
         this.showToast('Memory saved successfully!', 'success');
         this.refreshCurrentView();
     }
